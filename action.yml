@@ -1,0 +1,42 @@
+---
+inputs:
+  working-directory:
+    description: The working directory where the commands are run
+    required: false
+    default: ./
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup virtualenv
+      run: |
+        echo "::group::Setup virtualenv"
+        export CFN_LINT_VENV="${HOME}/.virtualenvs/cfn-lint"
+        python -m venv "${CFN_LINT_VENV}"
+        export PATH_TO_CFN_LINT="${CFN_LINT_VENV}/bin"
+        echo "PATH_TO_CFN_LINT=${PATH_TO_CFN_LINT}" >> $GITHUB_ENV
+        echo "::endgroup::"
+      shell: bash
+    - name: Install cfn-lint
+      run: |
+        echo "::group::Install cfn-lint"
+        . "${PATH_TO_CFN_LINT}/activate"
+        python -m pip install --upgrade cfn-lint>=0.52.0 cfn-lint-ax>=0.0.6 cfn-lint-serverless>=0.2.1
+        deactivate
+        echo "::endgroup::"
+      shell: bash
+    - name: Print versions
+      run: |
+        echo "::group::Print versions"
+        . "${PATH_TO_CFN_LINT}/activate"
+        python -m pip freeze
+        deactivate
+        echo "::endgroup::"
+      shell: bash
+    - name: Run cfn-lint
+      run: |
+        echo "::group::Run cfn-lint"
+        ${PATH_TO_CFN_LINT}/cfn-lint
+        echo "::endgroup::"
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
