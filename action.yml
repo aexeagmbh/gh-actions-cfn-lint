@@ -21,7 +21,7 @@ runs:
       run: |
         echo "::group::Install cfn-lint"
         . "${PATH_TO_CFN_LINT}/activate"
-        python -m pip install --upgrade cfn-lint>=0.71.0 cfn-lint-ax>=0.0.9 cfn-lint-serverless>=0.3.2
+        python -m pip install --upgrade cfn-lint>=0.87.1 cfn-lint-ax>=0.0.17 cfn-lint-serverless>=0.3.2
         deactivate
         echo "::endgroup::"
       shell: bash
