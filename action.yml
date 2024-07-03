@@ -21,7 +21,7 @@ runs:
       run: |
         echo "::group::Install cfn-lint"
         . "${PATH_TO_CFN_LINT}/activate"
-        python -m pip install --upgrade cfn-lint>=0.87.1 cfn-lint-ax>=0.0.17 cfn-lint-serverless>=0.3.2
+        python -m pip install --upgrade cfn-lint>=0.87.9 cfn-lint-ax>=0.0.20 cfn-lint-serverless>=0.3.2
         deactivate
         echo "::endgroup::"
       shell: bash
@@ -36,7 +36,7 @@ runs:
     - name: Run cfn-lint
       run: |
         echo "::group::Run cfn-lint"
-        ${PATH_TO_CFN_LINT}/cfn-lint --info
+        ${PATH_TO_CFN_LINT}/cfn-lint
         echo "::endgroup::"
       shell: bash
       working-directory: ${{ inputs.working-directory }}
