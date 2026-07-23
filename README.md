@@ -1,6 +1,6 @@
-# gh-actions-cnf-lint
+# gh-actions-cfn-lint
 
-This action runs cfn-lint. The additional rules from cfn-lint-ax and cfn-lint-serverless are available.
+This action runs cfn-lint. The additional rules from cfn-lint-ax are available.
 
 
 ## Inputs
