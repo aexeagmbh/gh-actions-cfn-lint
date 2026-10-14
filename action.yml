@@ -14,7 +14,7 @@ runs:
         export CFN_LINT_VENV="${HOME}/.virtualenvs/cfn-lint"
         python -m venv "${CFN_LINT_VENV}"
         export PATH_TO_CFN_LINT="${CFN_LINT_VENV}/bin"
-        echo "PATH_TO_CFN_LINT=${PATH_TO_CFN_LINT}" >> $GITHUB_ENV
+        echo "PATH_TO_CFN_LINT=${PATH_TO_CFN_LINT}" >> "$GITHUB_ENV"
         echo "::endgroup::"
       shell: bash
     - name: Install cfn-lint
@@ -32,7 +32,7 @@ runs:
     - name: Run cfn-lint
       run: |
         echo "::group::Run cfn-lint"
-        ${PATH_TO_CFN_LINT}/cfn-lint
+        "${PATH_TO_CFN_LINT}/cfn-lint"
         echo "::endgroup::"
       shell: bash
       working-directory: ${{ inputs.working-directory }}
