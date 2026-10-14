@@ -20,17 +20,13 @@ runs:
     - name: Install cfn-lint
       run: |
         echo "::group::Install cfn-lint"
-        . "${PATH_TO_CFN_LINT}/activate"
-        python -m pip install --upgrade 'cfn-lint>=1.57.2' 'cfn-lint-ax>=1.4.2'
-        deactivate
+        "${PATH_TO_CFN_LINT}/python" -m pip install --upgrade -r "${GITHUB_ACTION_PATH}/requirements.txt"
         echo "::endgroup::"
       shell: bash
     - name: Print versions
       run: |
         echo "::group::Print versions"
-        . "${PATH_TO_CFN_LINT}/activate"
-        python -m pip freeze
-        deactivate
+        "${PATH_TO_CFN_LINT}/python" -m pip freeze
         echo "::endgroup::"
       shell: bash
     - name: Run cfn-lint
