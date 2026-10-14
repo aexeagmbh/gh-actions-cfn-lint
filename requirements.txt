@@ -1,2 +1,4 @@
-cfn-lint>=1.57.2
-cfn-lint-ax>=1.4.2
+# Major versions are capped on purpose: adopt cfn-lint 2 / cfn-lint-ax 2 by
+# bumping both lines here, not by letting pip pick them up on every run.
+cfn-lint>=1.57.2,<2
+cfn-lint-ax>=1.4.2,<2
