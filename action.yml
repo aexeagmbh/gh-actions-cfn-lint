@@ -29,10 +29,25 @@ runs:
         "${PATH_TO_CFN_LINT}/python" -m pip freeze
         echo "::endgroup::"
       shell: bash
+    # Since cfn-lint 1.59.0 a project .cfnlintrc may not set append_rules (it
+    # loads Python modules), only the CLI, --config-file or ~/.cfnlintrc may.
+    # Pass the project file explicitly, so the cfn-lint-ax rules it appends
+    # still load. Same lookup order as cfn-lint's own discovery.
     - name: Run cfn-lint
       run: |
         echo "::group::Run cfn-lint"
-        "${PATH_TO_CFN_LINT}/cfn-lint"
+        config_file=""
+        for candidate in .cfnlintrc .cfnlintrc.yaml .cfnlintrc.yml; do
+          if [ -f "${candidate}" ]; then
+            config_file="${candidate}"
+            break
+          fi
+        done
+        if [ -n "${config_file}" ]; then
+          "${PATH_TO_CFN_LINT}/cfn-lint" --config-file "${config_file}"
+        else
+          "${PATH_TO_CFN_LINT}/cfn-lint"
+        fi
         echo "::endgroup::"
       shell: bash
       working-directory: ${{ inputs.working-directory }}

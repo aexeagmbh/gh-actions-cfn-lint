@@ -23,11 +23,15 @@ enable them (see below).
 
 ## Enabling the cfn-lint-ax rules
 
-The action runs `cfn-lint` without arguments, so cfn-lint reads its settings from `.cfnlintrc`
-(or `.cfnlintrc.yaml` / `.cfnlintrc.yml`) in the directory given by the `working-directory` input
-(default `./`). That file must list the templates to lint under `templates`. Without it, cfn-lint
-reads a template from stdin, which is empty in CI, and fails with
+The action runs cfn-lint with the settings in `.cfnlintrc` (or `.cfnlintrc.yaml` /
+`.cfnlintrc.yml`) in the directory given by the `working-directory` input (default `./`), passed
+as `--config-file`. That file must list the templates to lint under `templates`. Without it,
+cfn-lint reads a template from stdin, which is empty in CI, and fails with
 `E1001 'Resources' is a required property`.
+
+The file is passed explicitly because cfn-lint 1.59.0 and later refuse `append_rules` in a
+project config they discover on their own (`'append_rules' cannot be set in …/.cfnlintrc`). To run
+cfn-lint the same way locally, pass it too: `cfn-lint --config-file .cfnlintrc`.
 
 cfn-lint does not load the cfn-lint-ax rules by itself; add them under `append_rules`:
 
