@@ -1,4 +1,7 @@
 ---
+name: cfn-lint
+description: Lint CloudFormation templates with cfn-lint, with the cfn-lint-ax rules installed
+
 inputs:
   working-directory:
     description: The working directory where the commands are run
