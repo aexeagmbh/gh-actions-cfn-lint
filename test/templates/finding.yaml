@@ -1,0 +1,9 @@
+---
+# Valid for cfn-lint's own rules, but breaks one rule from each cfn-lint-ax
+# pack: W9311 (cfn_lint_ax.rules, no queue encryption) and ES6000
+# (cfn_lint_ax.serverless_rules, no RedrivePolicy). It fails only when the
+# rules are loaded.
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  Queue:
+    Type: AWS::SQS::Queue

@@ -23,7 +23,7 @@ runs:
     - name: Install cfn-lint
       run: |
         echo "::group::Install cfn-lint"
-        "${PATH_TO_CFN_LINT}/python" -m pip install --upgrade -r "${GITHUB_ACTION_PATH}/requirements.txt"
+        "${PATH_TO_CFN_LINT}/python" -m pip install --upgrade --require-hashes -r "${GITHUB_ACTION_PATH}/requirements.txt"
         echo "::endgroup::"
       shell: bash
     - name: Print versions

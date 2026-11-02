@@ -1,0 +1,8 @@
+# The ranges the action accepts. The action installs requirements.txt, which
+# is compiled from this file with exact versions and hashes; Dependabot keeps
+# it up to date within these ranges (see README).
+#
+# Major versions are capped on purpose: adopt cfn-lint 2 / cfn-lint-ax 2 by
+# bumping both lines here, not by letting Dependabot pick them up.
+cfn-lint>=1.57.2,<2
+cfn-lint-ax>=1.4.2,<2

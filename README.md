@@ -14,6 +14,35 @@ enable them (see below).
   a new Python release before cfn-lint supports it.
 
 
+## Versions
+
+The action installs exact versions of cfn-lint, cfn-lint-ax and their dependencies, checked
+against hashes, from `requirements.txt`. That file is compiled from the ranges in
+`requirements.in`:
+
+```sh
+uv pip compile requirements.in --universal --python-version 3.10 --generate-hashes --output-file requirements.txt
+```
+
+`--universal` resolves for every Python from 3.10 on, pinning a package once per Python version
+where one version can't serve them all. Compile against PyPI: if your uv config sets another
+index, add `--no-config --default-index https://pypi.org/simple`. Another index can add md5
+hashes, which pip refuses.
+
+Dependabot updates `requirements.txt` weekly within the ranges in `requirements.in`, once a
+release is 7 days old, and its pull requests merge by themselves when the tests pass. Repositories
+using the action from `@main` get an update when it merges; repositories that pin the action to a
+commit get it when they move the pin. Major versions of cfn-lint and cfn-lint-ax are capped in
+`requirements.in`; adopting one means raising the cap and compiling again.
+
+
+## Tests
+
+`.github/workflows/test.yml` runs the action on the fixtures in `test/`: one appends the
+cfn-lint-ax rules in the project's `.cfnlintrc`, the other in `~/.cfnlintrc`. Each lints a template
+that must pass and one that must fail, as only the cfn-lint-ax rules reject it.
+
+
 ## Inputs
 
 ### `working-directory`

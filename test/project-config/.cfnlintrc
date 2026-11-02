@@ -1,0 +1,9 @@
+---
+# The setup the README describes: the cfn-lint-ax rules are appended in the
+# project's own .cfnlintrc. test.yml copies a template from ../templates to
+# template.yaml before each run.
+templates:
+  - template.yaml
+append_rules:
+  - cfn_lint_ax.rules
+  - cfn_lint_ax.serverless_rules
