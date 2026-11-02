@@ -1,0 +1,48 @@
+---
+# Weekly updates of the packages the action installs and of the actions the
+# tests use.
+#
+# requirements.txt is compiled from requirements.in by `uv pip compile` (the
+# command is in its header), so Dependabot updates it like a lockfile, within
+# the ranges in requirements.in, transitive packages included. Each update
+# runs through test.yml and merges by itself once that passes
+# (dependabot-auto-merge.yml). Repositories using the action from @main get
+# it with that merge.
+#
+# One group per ecosystem, so a week's updates arrive as one pull request.
+# The 7-day cooldown leaves a broken release time to be yanked or fixed
+# before it gets here; security updates skip it.
+version: 2
+
+updates:
+  - package-ecosystem: uv   # requirements.in -> requirements.txt
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    allow:
+      - dependency-type: all
+    groups:
+      python-packages:
+        patterns:
+          - '*'
+    ignore:
+      # Capped below 2 in requirements.in on purpose.
+      - dependency-name: cfn-lint
+        update-types:
+          - version-update:semver-major
+      - dependency-name: cfn-lint-ax
+        update-types:
+          - version-update:semver-major
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      github-actions:
+        patterns:
+          - '*'

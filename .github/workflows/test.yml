@@ -1,0 +1,77 @@
+---
+name: Test
+
+'on':
+  push:
+    branches:
+      - main
+  pull_request: {}
+  workflow_dispatch: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # action.yml on each fixture in test/, twice: test/templates/clean.yaml must
+  # pass and test/templates/finding.yaml, which breaks one rule from each
+  # cfn-lint-ax pack, must fail. The clean run shows that the pinned packages
+  # install and cfn-lint accepts the config, so the failing run can only fail
+  # because the cfn-lint-ax rules ran.
+  action:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # The oldest and newest Python cfn-lint supports (README), as
+        # requirements.txt pins some packages per Python version.
+        python-version: ['3.10', '3.14']
+        fixture: [project-config, user-config]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Append the cfn-lint-ax rules in ~/.cfnlintrc
+        if: matrix.fixture == 'user-config'
+        run: printf 'append_rules:\n  - cfn_lint_ax.rules\n  - cfn_lint_ax.serverless_rules\n' > ~/.cfnlintrc
+      - name: Use the clean template
+        run: cp test/templates/clean.yaml "test/${FIXTURE}/template.yaml"
+        env:
+          FIXTURE: ${{ matrix.fixture }}
+      - name: Lint the clean template
+        uses: ./
+        with:
+          working-directory: test/${{ matrix.fixture }}
+      - name: Use the template with findings
+        run: cp test/templates/finding.yaml "test/${FIXTURE}/template.yaml"
+        env:
+          FIXTURE: ${{ matrix.fixture }}
+      - name: Lint the template with findings
+        id: finding
+        continue-on-error: true
+        uses: ./
+        with:
+          working-directory: test/${{ matrix.fixture }}
+      - name: Expect the findings to fail the action
+        if: steps.finding.outcome != 'failure'
+        run: |
+          echo "::error::cfn-lint passed test/templates/finding.yaml, so the cfn-lint-ax rules did not run"
+          exit 1
+
+  # The one check for branch protection to require, whatever the matrix
+  # above holds. Dependabot's pull requests merge once it passes.
+  result:
+    if: always()
+    needs: action
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the test results
+        run: test "${RESULT}" = success
+        env:
+          RESULT: ${{ needs.action.result }}

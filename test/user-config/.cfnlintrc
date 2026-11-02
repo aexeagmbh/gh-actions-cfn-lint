@@ -1,0 +1,7 @@
+---
+# The cfn-lint-ax rules come from ~/.cfnlintrc, which test.yml writes, and
+# cfn-lint merges it with this file. That is where cfn-lint 1.59's error
+# message sends `append_rules`. test.yml copies a template from ../templates
+# to template.yaml before each run.
+templates:
+  - template.yaml

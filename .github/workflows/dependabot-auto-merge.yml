@@ -1,0 +1,26 @@
+---
+name: Dependabot auto-merge
+
+'on': pull_request
+
+permissions: {}
+
+jobs:
+  # Turns on auto-merge for Dependabot's pull requests, so they merge as soon
+  # as the checks branch protection requires on main pass (the Test
+  # workflow's `result` job). Needs "Allow auto-merge" in the repository
+  # settings. Major updates of cfn-lint and cfn-lint-ax never get here:
+  # dependabot.yml ignores them.
+  auto-merge:
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Enable auto-merge
+        run: gh pr merge --auto --rebase "${PR_URL}"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ github.token }}
