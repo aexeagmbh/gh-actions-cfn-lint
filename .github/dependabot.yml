@@ -3,11 +3,13 @@
 # tests use.
 #
 # requirements.txt is compiled from requirements.in by `uv pip compile` (the
-# command is in its header), so Dependabot updates it like a lockfile, within
-# the ranges in requirements.in, transitive packages included. Each update
-# runs through test.yml and merges by itself once that passes
-# (dependabot-auto-merge.yml). Repositories using the action from @main get
-# it with that merge.
+# command is in its header), so Dependabot updates it like a lockfile,
+# transitive packages included. `lockfile-only` keeps it within the ranges
+# in requirements.in: by default Dependabot would rewrite them, raising each
+# lower bound to the new version and moving an upper bound past it, which
+# would undo the caps there. Each update runs through test.yml and merges by
+# itself once that passes (dependabot-auto-merge.yml). Repositories using
+# the action from @main get it with that merge.
 #
 # One group per ecosystem, so a week's updates arrive as one pull request.
 # The 7-day cooldown leaves a broken release time to be yanked or fixed
@@ -21,20 +23,13 @@ updates:
       interval: weekly
     cooldown:
       default-days: 7
+    versioning-strategy: lockfile-only
     allow:
       - dependency-type: all
     groups:
       python-packages:
         patterns:
           - '*'
-    ignore:
-      # Capped below 2 in requirements.in on purpose.
-      - dependency-name: cfn-lint
-        update-types:
-          - version-update:semver-major
-      - dependency-name: cfn-lint-ax
-        update-types:
-          - version-update:semver-major
 
   - package-ecosystem: github-actions
     directory: /

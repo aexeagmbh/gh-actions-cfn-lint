@@ -29,18 +29,22 @@ where one version can't serve them all. Compile against PyPI: if your uv config 
 index, add `--no-config --default-index https://pypi.org/simple`. Another index can add md5
 hashes, which pip refuses.
 
-Dependabot updates `requirements.txt` weekly within the ranges in `requirements.in`, once a
-release is 7 days old, and its pull requests merge by themselves when the tests pass. Repositories
-using the action from `@main` get an update when it merges; repositories that pin the action to a
-commit get it when they move the pin. Major versions of cfn-lint and cfn-lint-ax are capped in
-`requirements.in`; adopting one means raising the cap and compiling again.
+Dependabot updates `requirements.txt` weekly, once a release is 7 days old, and its pull requests
+merge by themselves when the tests pass. It stays within the ranges in `requirements.in` and never
+changes them. Repositories using the action from `@main` get an update when it merges;
+repositories that pin the action to a commit get it when they move the pin.
+
+`requirements.in` caps the major versions of cfn-lint and cfn-lint-ax, and holds cfn-lint below
+1.59 for now (see [Enabling the cfn-lint-ax rules](#enabling-the-cfn-lint-ax-rules)). Moving a cap
+means editing `requirements.in` and compiling again.
 
 
 ## Tests
 
-`.github/workflows/test.yml` runs the action on the fixtures in `test/`: one appends the
-cfn-lint-ax rules in the project's `.cfnlintrc`, the other in `~/.cfnlintrc`. Each lints a template
-that must pass and one that must fail, as only the cfn-lint-ax rules reject it.
+`.github/workflows/test.yml` runs the action on every Python from 3.10 to 3.14, with two fixtures
+in `test/`: one appends the cfn-lint-ax rules in the project's `.cfnlintrc`, the other in
+`~/.cfnlintrc`. Each lints a template that must pass, then two that must fail, each breaking a rule
+from only one of the two cfn-lint-ax packs.
 
 
 ## Inputs
@@ -67,6 +71,11 @@ append_rules:
   - cfn_lint_ax.rules
   - cfn_lint_ax.serverless_rules
 ```
+
+cfn-lint 1.59.0 and later refuse `append_rules` in a `.cfnlintrc` they find on their own
+(`'append_rules' cannot be set in …/.cfnlintrc`), so `requirements.in` holds the action at cfn-lint
+1.58 until it handles that. To run cfn-lint 1.59 or later locally, put `append_rules` in
+`~/.cfnlintrc` instead, or pass `--append-rules` on the command line.
 
 The rules are listed in [aexeagmbh/cfn-lint-rules](https://github.com/aexeagmbh/cfn-lint-rules).
 

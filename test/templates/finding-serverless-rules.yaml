@@ -1,0 +1,9 @@
+---
+# Breaks only ES6000 from cfn_lint_ax.serverless_rules (no RedrivePolicy), so
+# it fails only when that pack is loaded. The encryption satisfies W9311.
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  Queue:
+    Type: AWS::SQS::Queue
+    Properties:
+      SqsManagedSseEnabled: true

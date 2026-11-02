@@ -1,7 +1,8 @@
 ---
 # The setup the README describes: the cfn-lint-ax rules are appended in the
-# project's own .cfnlintrc. test.yml copies a template from ../templates to
-# template.yaml before each run.
+# project's own .cfnlintrc. cfn-lint 1.59.0 refuses that, which is why
+# requirements.in holds cfn-lint below 1.59. test.yml copies a template from
+# ../templates to template.yaml before each run.
 templates:
   - template.yaml
 append_rules:
