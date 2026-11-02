@@ -1,0 +1,14 @@
+---
+# Breaks only W9311 from cfn_lint_ax.rules (no queue encryption), so it fails
+# only when that pack is loaded. The RedrivePolicy satisfies ES6000.
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  DeadLetterQueueArn:
+    Type: String
+Resources:
+  Queue:
+    Type: AWS::SQS::Queue
+    Properties:
+      RedrivePolicy:
+        deadLetterTargetArn: !Ref DeadLetterQueueArn
+        maxReceiveCount: 3

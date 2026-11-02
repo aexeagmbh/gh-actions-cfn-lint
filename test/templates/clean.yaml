@@ -1,8 +1,8 @@
 ---
-# The queue from finding.yaml, made to pass the cfn-lint-ax rules. The
-# dead-letter queue's ARN is a parameter: a dead-letter queue in this
-# template would need a RedrivePolicy of its own, as ES6000 only recognises
-# one when the whole RedrivePolicy is an intrinsic function.
+# Passes cfn-lint and both cfn-lint-ax packs. The dead-letter queue's ARN is
+# a parameter: a dead-letter queue in this template would need a
+# RedrivePolicy of its own, as ES6000 only recognises one when the whole
+# RedrivePolicy is an intrinsic function.
 AWSTemplateFormatVersion: '2010-09-09'
 Parameters:
   DeadLetterQueueArn:

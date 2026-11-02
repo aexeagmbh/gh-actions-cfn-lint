@@ -8,9 +8,9 @@ permissions: {}
 jobs:
   # Turns on auto-merge for Dependabot's pull requests, so they merge as soon
   # as the checks branch protection requires on main pass (the Test
-  # workflow's `result` job). Needs "Allow auto-merge" in the repository
-  # settings. Major updates of cfn-lint and cfn-lint-ax never get here:
-  # dependabot.yml ignores them.
+  # workflow's `result` job). Needs "Allow auto-merge" and rebase merging in
+  # the repository settings. Major updates of cfn-lint and cfn-lint-ax never
+  # get here: requirements.in caps them, and Dependabot leaves it unchanged.
   auto-merge:
     if: github.event.pull_request.user.login == 'dependabot[bot]'
     timeout-minutes: 5

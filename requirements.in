@@ -1,8 +1,12 @@
 # The ranges the action accepts. The action installs requirements.txt, which
 # is compiled from this file with exact versions and hashes; Dependabot keeps
-# it up to date within these ranges (see README).
+# it up to date within these ranges and never changes them (see README).
 #
 # Major versions are capped on purpose: adopt cfn-lint 2 / cfn-lint-ax 2 by
-# bumping both lines here, not by letting Dependabot pick them up.
-cfn-lint>=1.57.2,<2
+# bumping both lines here.
+#
+# cfn-lint is also held below 1.59: 1.59.0 refuses `append_rules` in a
+# .cfnlintrc it discovers, the setup the README describes. The cap goes once
+# the action handles that.
+cfn-lint>=1.57.2,<1.59
 cfn-lint-ax>=1.4.2,<2
