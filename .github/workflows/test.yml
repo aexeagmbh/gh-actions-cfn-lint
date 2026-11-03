@@ -20,7 +20,8 @@ jobs:
   # must pass, and each finding-*.yaml, which breaks a rule from one
   # cfn-lint-ax pack only, must fail. The clean run shows that the pinned
   # packages install and cfn-lint accepts the config, so a failing run can only
-  # fail because that pack's rules ran.
+  # fail because that pack's rules ran. templates-only is the supported setup;
+  # project-config goes with the cap on cfn-lint, see the README.
   action:
     timeout-minutes: 10
     runs-on: ubuntu-latest
@@ -30,7 +31,7 @@ jobs:
         # Every Python cfn-lint supports (README): requirements.txt pins some
         # packages per Python version, and an update can move those splits.
         python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
-        fixture: [project-config, user-config]
+        fixture: [templates-only, project-config, user-config]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0

@@ -1,6 +1,6 @@
 ---
 name: cfn-lint
-description: Lint CloudFormation templates with cfn-lint, with the cfn-lint-ax rules installed
+description: Lint CloudFormation templates with cfn-lint, with the cfn-lint-ax rules enabled
 
 inputs:
   working-directory:
@@ -32,10 +32,13 @@ runs:
         "${PATH_TO_CFN_LINT}/python" -m pip freeze
         echo "::endgroup::"
       shell: bash
+    # The action enables the cfn-lint-ax rules itself: cfn-lint 1.59+ refuses
+    # `append_rules` in a .cfnlintrc it finds on its own. The command-line value
+    # replaces `append_rules` from config files.
     - name: Run cfn-lint
       run: |
         echo "::group::Run cfn-lint"
-        "${PATH_TO_CFN_LINT}/cfn-lint"
+        "${PATH_TO_CFN_LINT}/cfn-lint" --append-rules cfn_lint_ax.rules cfn_lint_ax.serverless_rules
         echo "::endgroup::"
       shell: bash
       working-directory: ${{ inputs.working-directory }}

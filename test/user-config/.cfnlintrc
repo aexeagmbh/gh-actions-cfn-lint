@@ -1,8 +1,7 @@
 ---
-# The cfn-lint-ax rules come from ~/.cfnlintrc, which test.yml writes, and
-# cfn-lint merges it with this file. Unlike project-config, this also works
-# with cfn-lint 1.59.0, whose error for `append_rules` in a project
-# .cfnlintrc points here. test.yml copies a template from ../templates to
-# template.yaml before each run.
+# ~/.cfnlintrc, which test.yml writes, has an `append_rules` too; this checks
+# that it does not break the run next to the action's --append-rules, which
+# replaces it. test.yml copies a template from ../templates to template.yaml
+# before each run.
 templates:
   - template.yaml
