@@ -1,6 +1,6 @@
 ---
-# Weekly updates of the packages the action installs and of the actions the
-# tests use.
+# Updates of the packages the action installs (daily) and of the actions the
+# tests use (weekly).
 #
 # requirements.txt is compiled from requirements.in by `uv pip compile` (the
 # command is in its header), so Dependabot updates it like a lockfile,
@@ -11,22 +11,32 @@
 # itself once that passes (dependabot-auto-merge.yml). Repositories using
 # the action from @main get it with that merge.
 #
-# One group per ecosystem, so a week's updates arrive as one pull request.
 # The 7-day cooldown leaves a broken release time to be yanked or fixed
-# before it gets here; security updates skip it.
+# before it gets here; security updates skip it. cfn-lint-ax is ours, so it
+# skips the cooldown, and the daily schedule brings a release of it here the
+# next day. It has a group, and so a pull request, of its own: a group's
+# pull request merges only once all of its updates pass the tests, so a
+# failing update of another package would otherwise hold a cfn-lint-ax
+# release back, and the other way round.
 version: 2
 
 updates:
   - package-ecosystem: uv   # requirements.in -> requirements.txt
     directory: /
     schedule:
-      interval: weekly
+      interval: daily
     cooldown:
       default-days: 7
+      exclude:
+        - cfn-lint-ax
     versioning-strategy: lockfile-only
     allow:
       - dependency-type: all
     groups:
+      # A dependency joins the first group that matches it.
+      cfn-lint-ax:
+        patterns:
+          - cfn-lint-ax
       python-packages:
         patterns:
           - '*'
