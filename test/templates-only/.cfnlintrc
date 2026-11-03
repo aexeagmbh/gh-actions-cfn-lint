@@ -1,0 +1,6 @@
+---
+# The setup the README describes: only templates and settings, the action
+# appends the cfn-lint-ax rules. test.yml copies a template from ../templates
+# to template.yaml before each run.
+templates:
+  - template.yaml

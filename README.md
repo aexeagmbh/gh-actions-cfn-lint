@@ -1,7 +1,6 @@
 # gh-actions-cfn-lint
 
-This action runs cfn-lint. cfn-lint-ax is installed alongside it, but its rules only run once you
-enable them (see below).
+This action runs cfn-lint with the cfn-lint-ax rules enabled (see below).
 
 
 ## Requirements
@@ -36,16 +35,20 @@ within the ranges in `requirements.in` and never changes them. Repositories usin
 they move the pin.
 
 `requirements.in` caps the major versions of cfn-lint and cfn-lint-ax, and holds cfn-lint below
-1.59 for now (see [Enabling the cfn-lint-ax rules](#enabling-the-cfn-lint-ax-rules)). Moving a cap
+1.59 for now. That cap goes once repositories using the action have dropped `append_rules` and
+`output_file` from `.cfnlintrc` (see [Configuring cfn-lint](#configuring-cfn-lint)). Moving a cap
 means editing `requirements.in` and compiling again.
 
 
 ## Tests
 
-`.github/workflows/test.yml` runs the action on every Python from 3.10 to 3.14, with two fixtures
-in `test/`: one appends the cfn-lint-ax rules in the project's `.cfnlintrc`, the other in
-`~/.cfnlintrc`. Each lints a template that must pass, then two that must fail, each breaking a rule
-from only one of the two cfn-lint-ax packs.
+`.github/workflows/test.yml` runs the action on every Python from 3.10 to 3.14, with three fixtures
+in `test/`. `templates-only` is the supported setup: a `.cfnlintrc` with only `templates`.
+`project-config` has a leftover `append_rules` in `.cfnlintrc`, the old setup, which must not break
+the run; it goes when the cap on cfn-lint is lifted. `user-config` has `append_rules` in
+`~/.cfnlintrc` next to the action's flag, which must not break it either. Each lints a template
+that must pass, then two that must fail, each breaking a rule from only one of the two cfn-lint-ax
+packs.
 
 
 ## Inputs
@@ -55,28 +58,34 @@ from only one of the two cfn-lint-ax packs.
 **Optional** Specifies the working directory where the commands are run.
 
 
-## Enabling the cfn-lint-ax rules
+## Configuring cfn-lint
 
-The action runs `cfn-lint` without arguments, so cfn-lint reads its settings from `.cfnlintrc`
-(or `.cfnlintrc.yaml` / `.cfnlintrc.yml`) in the directory given by the `working-directory` input
-(default `./`). That file must list the templates to lint under `templates`. Without it, cfn-lint
-reads a template from stdin, which is empty in CI, and fails with
+The action passes nothing but the rule packs (see below) to `cfn-lint`; everything else cfn-lint
+reads from `.cfnlintrc` (or `.cfnlintrc.yaml` / `.cfnlintrc.yml`) in the directory given by the
+`working-directory` input (default `./`). That file must list the templates to lint under
+`templates`. Without it, cfn-lint reads a template from stdin, which is empty in CI, and fails with
 `E1001 'Resources' is a required property`.
 
-cfn-lint does not load the cfn-lint-ax rules by itself; add them under `append_rules`:
+The action enables both cfn-lint-ax packs itself, with
+`cfn-lint --append-rules cfn_lint_ax.rules cfn_lint_ax.serverless_rules`. Your `.cfnlintrc` lists
+`templates` and any other settings, but no `append_rules`:
 
 ```yaml
 templates:
   - "**/*.template.yaml"
-append_rules:
-  - cfn_lint_ax.rules
-  - cfn_lint_ax.serverless_rules
 ```
 
-cfn-lint 1.59.0 and later refuse `append_rules` in a `.cfnlintrc` they find on their own
-(`'append_rules' cannot be set in …/.cfnlintrc`), so `requirements.in` holds the action at cfn-lint
-1.58 until it handles that. To run cfn-lint 1.59 or later locally, put `append_rules` in
-`~/.cfnlintrc` instead, or pass `--append-rules` on the command line.
+Without `merge_configs`, the command-line `--append-rules` replaces `append_rules` from config
+files, so you can't add rule modules that way. With `merge_configs: true`, a config file that lists
+the packs fails with `DuplicateRuleError`.
+
+cfn-lint 1.59.0 and later refuse `append_rules` and `output_file` in a `.cfnlintrc` they find on
+their own (`'append_rules' cannot be set in …/.cfnlintrc`). Until the cap on cfn-lint is lifted, an
+`append_rules` with the two packs still works, but both should go.
+
+To run the rules locally, use
+`cfn-lint --append-rules cfn_lint_ax.rules cfn_lint_ax.serverless_rules`, or put `append_rules` in
+`~/.cfnlintrc`, which also covers the editor plugin.
 
 The rules are listed in [aexeagmbh/cfn-lint-rules](https://github.com/aexeagmbh/cfn-lint-rules).
 
