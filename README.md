@@ -29,10 +29,11 @@ where one version can't serve them all. Compile against PyPI: if your uv config 
 index, add `--no-config --default-index https://pypi.org/simple`. Another index can add md5
 hashes, which pip refuses.
 
-Dependabot updates `requirements.txt` weekly, once a release is 7 days old, and its pull requests
-merge by themselves when the tests pass. It stays within the ranges in `requirements.in` and never
-changes them. Repositories using the action from `@main` get an update when it merges;
-repositories that pin the action to a commit get it when they move the pin.
+Dependabot updates `requirements.txt` daily, once a release is 7 days old (cfn-lint-ax, our own
+package, without waiting), and its pull requests merge by themselves when the tests pass. It stays
+within the ranges in `requirements.in` and never changes them. Repositories using the action from
+`@main` get an update when it merges; repositories that pin the action to a commit get it when
+they move the pin.
 
 `requirements.in` caps the major versions of cfn-lint and cfn-lint-ax, and holds cfn-lint below
 1.59 for now (see [Enabling the cfn-lint-ax rules](#enabling-the-cfn-lint-ax-rules)). Moving a cap
