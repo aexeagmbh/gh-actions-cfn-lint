@@ -33,8 +33,8 @@ runs:
         echo "::endgroup::"
       shell: bash
     # The action enables the cfn-lint-ax rules itself: cfn-lint 1.59+ refuses
-    # `append_rules` in a .cfnlintrc it finds on its own. The command-line value
-    # replaces `append_rules` from config files.
+    # `append_rules` in the project's .cfnlintrc. The command-line value replaces
+    # `append_rules` from config files.
     - name: Run cfn-lint
       run: |
         echo "::group::Run cfn-lint"
