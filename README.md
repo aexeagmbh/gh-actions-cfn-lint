@@ -8,9 +8,10 @@ This action runs cfn-lint with the cfn-lint-ax rules enabled (see below).
 - A Linux or macOS runner. Windows runners are not supported.
 - Python as `python` on the `PATH`, with the `venv` module (on Debian/Ubuntu: the `python3-venv`
   package), e.g. via `actions/setup-python`. cfn-lint declares the Python versions it supports in
-  its package metadata (currently `>=3.10,<3.15`), and pip will not install it outside that range.
+  its package metadata (currently `>=3.10,<3.16`), and pip will not install it outside that range.
   Pin a supported minor version such as `python-version: "3.14"` rather than `3.x`, which picks up
-  a new Python release before cfn-lint supports it.
+  a new Python release before cfn-lint supports it. The action's tests cover Python 3.10 to 3.15
+  (see [Tests](#tests)).
 
 
 ## Versions
@@ -34,21 +35,17 @@ within the ranges in `requirements.in` and never changes them. Repositories usin
 `@main` get an update when it merges; repositories that pin the action to a commit get it when
 they move the pin.
 
-`requirements.in` caps the major versions of cfn-lint and cfn-lint-ax, and holds cfn-lint below
-1.59 for now. That cap goes once repositories using the action have dropped `append_rules` and
-`output_file` from `.cfnlintrc` (see [Configuring cfn-lint](#configuring-cfn-lint)). Moving a cap
-means editing `requirements.in` and compiling again.
+`requirements.in` caps the major versions of cfn-lint and cfn-lint-ax. Moving a cap means editing
+`requirements.in` and compiling again.
 
 
 ## Tests
 
-`.github/workflows/test.yml` runs the action on every Python from 3.10 to 3.14, with three fixtures
+`.github/workflows/test.yml` runs the action on every Python from 3.10 to 3.15, with two fixtures
 in `test/`. `templates-only` is the supported setup: a `.cfnlintrc` with only `templates`.
-`project-config` has a leftover `append_rules` in `.cfnlintrc`, the old setup, which must not break
-the run; it goes when the cap on cfn-lint is lifted. `user-config` has `append_rules` in
-`~/.cfnlintrc` next to the action's flag, which must not break it either. Each lints a template
-that must pass, then two that must fail, each breaking a rule from only one of the two cfn-lint-ax
-packs.
+`user-config` has `append_rules` in `~/.cfnlintrc` next to the action's flag, which must not break
+the run. Each lints a template that must pass, then two that must fail, each breaking a rule from
+only one of the two cfn-lint-ax packs.
 
 
 ## Inputs
@@ -76,12 +73,12 @@ templates:
 ```
 
 Without `merge_configs`, the command-line `--append-rules` replaces `append_rules` from config
-files, so you can't add rule modules that way. With `merge_configs: true`, a config file that lists
-the packs fails with `DuplicateRuleError`.
+files, so you can't add rule modules that way. With `merge_configs: true`, a `~/.cfnlintrc` that
+lists the packs fails with `DuplicateRuleError`.
 
-cfn-lint 1.59.0 and later refuse `append_rules` and `output_file` in a `.cfnlintrc` they find on
-their own (`'append_rules' cannot be set in …/.cfnlintrc`). Until the cap on cfn-lint is lifted, an
-`append_rules` with the two packs still works, but both should go.
+cfn-lint 1.59.0 and later refuse `append_rules` and `output_file` in the project's `.cfnlintrc`, the
+one they find in the working directory (`'append_rules' cannot be set in …/.cfnlintrc`), so neither
+belongs there. `~/.cfnlintrc` may still set `append_rules`.
 
 To run the rules locally, use
 `cfn-lint --append-rules cfn_lint_ax.rules cfn_lint_ax.serverless_rules`, or put `append_rules` in
