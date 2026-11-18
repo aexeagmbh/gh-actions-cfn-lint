@@ -14,9 +14,9 @@ jsonpatch==1.45 \
     --hash=sha256:e170131ff8c5b01216dfe35f034613209ee1fd012abbd849a9791f9139e44cf9 \
     --hash=sha256:f0975a88d0b26b6ebbcdfc4620483cb56c249115833d51c426cae305b96519ad
     # via cfn-lint
-jsonpointer==3.10 \
-    --hash=sha256:3b08b9e5239f1b683e31c9561c350d75ce3fa8cdd407130ca8491fdb0c9e56f3 \
-    --hash=sha256:69349c0e738c93e9efa501397091f49ad302ae686293effd05d7755c06f88ef0
+jsonpointer==3.12 \
+    --hash=sha256:7a3dcc11b64053eaa9c549e85e413f8d40a075215f793a331bed9182a14251ae \
+    --hash=sha256:89f391335ee2719ae72149e1bf30a4d4c7c5d92f15a3f53faa8d20cc7c6c7f19
     # via jsonpatch
 mpmath==1.4.1 \
     --hash=sha256:dc4f0ea2304480d4a9a48a94c1020571558ade522b44a6912efac63a586e140f \
