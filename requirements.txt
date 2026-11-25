@@ -6,9 +6,9 @@ cfn-lint==1.60.1 \
     # via
     #   -r requirements.in
     #   cfn-lint-ax
-cfn-lint-ax==1.4.2 \
-    --hash=sha256:76d95124ac5ad98a0334459737dd36d26307ab468b0d970b84f980303770f88d \
-    --hash=sha256:81cb9a62f9593600d2bc57240922595eec003a9d9741d5996fe21e808bd2a187
+cfn-lint-ax==1.4.3 \
+    --hash=sha256:602f218d0b832a7fa1de52a2634bb751b81711e5b3503f626ebb2e8880fdcce9 \
+    --hash=sha256:62456e9c357867b38b133ae2225416cd11dc84986b6054d70016651572516591
     # via -r requirements.in
 jsonpatch==1.45 \
     --hash=sha256:e170131ff8c5b01216dfe35f034613209ee1fd012abbd849a9791f9139e44cf9 \
